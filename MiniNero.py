@@ -1,7 +1,9 @@
 ########################################################################
 #     MiniNero.py
-#A miniature, well-commented
-#port of CryptoNote and Monero crypto.cpp / crypto-ops.cpp
+#A miniature, commented
+#port of CryptoNote and 
+#Monero: 
+#     crypto.cpp / crypto-ops.cpp
 #
 #Using Bernstein's ed25519.py for the curve stuff.
 #The main point is to have a model what's happening in CryptoNote
@@ -221,11 +223,7 @@ def ge_scalarmult_base(a):
     #it will return h = a*B, where B is ed25519 bp (x,4/5)
     #and a = a[0] + 256a[1] + ... + 256^31 a[31]
     #it assumes that a[31 <= 127 already
-
-    #I think this should include a clamp the CN, but I don't know since it's coded obscurely...
     return ge_scalarmult(8*a, BASEPOINT)
-
-#some references for the ge stuff:
 
 #NOT USED IN MININERO - use ge_scalarmult_base
 def ge_frombytes_vartime(key):
@@ -240,7 +238,7 @@ def ge_frombytes_vartime(key):
 
 #NOT USED IN MININERO - unecessary as all operations are from hex
 def ge_p1p1_to_p2(p):
-    #there are two ways o representing the points
+    #there are two ways of representing the points
     ##http://code.metager.de/source/xref/lib/nacl/20110221/crypto_sign/edwards25519sha512batch/ref/ge25519.c
     #http://www.hyperelliptic.org/EFD/g1p/auto-twisted-extended-1.html
     return
@@ -262,7 +260,7 @@ def ge_p3_to_p2():
     return
 
 def ge_mul8(P):
-    #ok, it looks like the point of this is to double three times
+    #ok, the point of this is to double three times
     #and the point is that the ge_p2_dbl returns a point in the p1p1 form
     #so that's why have to convert it first and then double
     return ge_scalarmult(8, P)
@@ -282,13 +280,12 @@ def sc_reduce32(data):
     #s is alread in the form:
     # s[0]+256*s[1]+...+256^31*s[31] = s
     #and the rest is just reducing mod l
-    #so basically take a 32 byte input, and reduce mod l
+    #so basically take a 32 byte input, and reduce modulo the prime
     return data % CURVE_P 
 
 def sc_mulsub(a, b, c):
-    #takes in ints??
-    #this should be easy enough, but do I need it?
-    #yes, this is used by the regular sig (not ring sig)
+    #takes in a, b, and c
+    #This is used by the regular sig 
     #i.e. in generate_signature
     #returns c-ab mod l
     a = number.bytes_to_long(a[::-1])
@@ -320,7 +317,7 @@ def random_scalar():
 def hash_to_scalar(data, length):
     #this one is H_s(P)
     #relies on cn_fast_hash and sc_reduce32 (which makes an int smaller)
-    #maybe the input here is not a 64 byte thing, and that's why sc_reduce32 
+    #the input here is not necessarily a 64 byte thing, and that's why sc_reduce32 
     res = hexToLong(cn_fast_hash(data, length))
     return sc_reduce32(res)
     
@@ -349,22 +346,20 @@ def generate_keys():
     return sec, pub
 
 def check_key(key):
-    #inputs a public key, and outputs if point is on the curve!
+    #inputs a public key, and outputs if point is on the curve
     return isoncurve(toPoint(key))
 
 def secret_key_to_public_key(secret_key):
-    #the actual function returns as bytes since they mult the fast way..
+    #the actual function returns as bytes since they mult the fast way.
     if sc_check(secret_key) != 0:
         print "error in sc_check"
         quit()
     return public_key(secret_key)
 
 def hash_to_ec(key):
-    #next need ge_fromfe_frombyts
-    #I'm just going to cheat slightly on this function
-    #for the same result
-    #it's essentially the same, just doing int instead of 
-    #bytes as intermediate step...
+    #takes a hash and turns into a point on the curve
+    #In MININERO, I'm not using the byte representation
+    #So this function is superfluous
     h = hash_to_scalar(key, len(key))
     point = ge_scalarmult_base(h)
     return ge_mul8(point)
@@ -417,8 +412,8 @@ def generate_ring_signature(prefix, image, pubs, pubs_count, sec, sec_index):
         buf += struct.pack('64s', aba[ii])
         buf += struct.pack('64s', abb[ii])
     hh = hash_to_scalar(buf,len(buf))
-    sigc[sec_index] = sc_sub(hh, summ) #basically c[s] = hash - sum c[i] mod l
-    sigr[sec_index] = sc_mulsub(sigc[sec_index], sec, kk) #basically r[s] = q[s] - sec * c[index]
+    sigc[sec_index] = sc_sub(hh, summ) # c[s] = hash - sum c[i] mod l
+    sigr[sec_index] = sc_mulsub(sigc[sec_index], sec, kk) # r[s] = q[s] - sec * c[index]
     return image, sigc, sigr
 
 
@@ -428,7 +423,7 @@ def generate_ring_signature(prefix, image, pubs, pubs_count, sec, sec_index):
 
 def check_ring_signature(prefix, key_image, pubs, pubs_count, sigr, sigc):
     #from https://github.com/monero-project/bitmonero/blob/6a70de32bf872d97f9eebc7564f1ee41ff149c36/src/crypto/crypto.cpp
-    #this is like the "ver" algorithm
+    #this is the "ver" algorithm
     aba = [0 for xx in range(pubs_count)] 
     abb = [0 for xx in range(pubs_count)] 
 
@@ -481,12 +476,10 @@ def generate_key_derivation(key1, key2):
 
 def derivation_to_scalar(derivation, output_index):
     #this function specifically hashes your
-    #output index (for the one time keys I think ?.. )
+    #output index (for the one time keys )
     #in order to get an int, so we can do ge_mult_scalar
-    #missing something here ... 
     #buf = s_comm(d = derivation, o = output_index)
     buf2 = struct.pack('64sl', derivation, output_index) 
-    #buf2 = pickle(buf)
     #print(buf2)
     return hash_to_scalar(buf2, len(buf2))
 
@@ -548,7 +541,6 @@ def check_signature(prefix_hash, pub, sigr, sigc):
     return sc_isnonzero(c) == 0
 
 def hexToLong(a):
-    #return number.bytes_to_long(a[::-1])
     return number.bytes_to_long(a.decode("hex"))
 
 def longToHex(a):
@@ -641,9 +633,8 @@ if __name__ == "__main__":
         print(derive_secret_key(keyder, output_index, x))
     if sys.argv[1] == "testcomm":
         a = "99b66345829d8c05041eea1ba1ed5b2984c3e5ec7a756ef053473c7f22b49f14"
-        #print(pack("l", a)) too long
         co2 = struct.pack('hhl', 1, 2, 3)
-        print(co2.encode("hex")) #doesn't print if your terminal doesn't have unicode
+        print(co2.encode("hex")) #sometimes doesn't print if your terminal doesn't have unicode
         
     if sys.argv[1] == "gensig":
         #testing generate_signature
