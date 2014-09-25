@@ -396,7 +396,7 @@ def generate_ring_signature(prefix, image, pubs, pubs_count, sec, sec_index):
             kk = random_scalar()
             tmp3 = ge_scalarmult_base(kk) #L[i] for i = s
             aba[ii] = tmp3
-            tmp3 = hash_to_ec(pubs[ii]) #L[i] for i != s
+            tmp3 = hash_to_ec(pubs[ii]) #R[i] for i = s
             abb[ii] = ge_scalarmult(kk, tmp3) 
         else:
             k1 = random_scalar() #note this generates a random scalar in the correct range...
