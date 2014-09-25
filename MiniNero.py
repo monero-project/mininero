@@ -15,6 +15,13 @@
 #Note2: 
 # As of yet, slightly incompatible, although mathematically equivalent.
 # The discrepancies are some differences in packing and hashing.
+#
+# To the extent possible under law, the implementer has waived all copyright
+# and related or neighboring rights to the source code in this file.
+# http://creativecommons.org/publicdomain/zero/1.0/
+#
+#The parts of code from Bernstein(?)'s library possibly has it's own license
+# which you can dig up from http://cr.yp.to/djb.html
 ########################################################################
 
 
@@ -37,9 +44,9 @@ q = 2**255 - 19
 l = 2**252 + 27742317777372353535851937790883648493
 BASEPOINT = "0900000000000000000000000000000000000000000000000000000000000000"
 
-##################################
-#Bernstein Eddie Library in python
-##################################
+#####################################
+#Bernstein(?) Eddie Library in python
+#####################################
 
 def H(m):
     return hashlib.sha512(m).digest()
