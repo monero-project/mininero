@@ -1,32 +1,30 @@
-########################################################################
-#     MiniNero.py
-#A miniature, commented
-#port of CryptoNote and 
-#Monero: 
-#     crypto.cpp / crypto-ops.cpp
-#
-#Using Bernstein's ed25519.py for the curve stuff.
-#The main point is to have a model what's happening in CryptoNote
-#             -Shen.Noether
-#
-#Note: The ring image function seems
-# to take a lot of memory to run
-# it will throw strange errors if
-# your computer doesn't have 
-# enough
-#Note2: 
-# As of yet, slightly incompatible, although mathematically equivalent.
-# The discrepancies are some differences in packing and hashing.
-#
-# To the extent possible under law, the implementer has waived all copyright
-# and related or neighboring rights to the source code in this file.
-# http://creativecommons.org/publicdomain/zero/1.0/
-#
-#The parts of code from Bernstein(?)'s library possibly has it's own license
-# which you can dig up from http://cr.yp.to/djb.html
-########################################################################
-
-
+# Copyright (c) 2014, The Monero Project
+# 
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without modification, are
+# permitted provided that the following conditions are met:
+# 
+# 1. Redistributions of source code must retain the above copyright notice, this list of
+#    conditions and the following disclaimer.
+# 
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list
+#    of conditions and the following disclaimer in the documentation and/or other
+#    materials provided with the distribution.
+# 
+# 3. Neither the name of the copyright holder nor the names of its contributors may be
+#    used to endorse or promote products derived from this software without specific
+#    prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+# THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF
+# THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import hashlib
 import struct
@@ -698,11 +696,3 @@ if __name__ == "__main__":
         print("nonreduced", longToHex(x))
         print("reduced", sc_reduce32_2(x))
         print("check reduced", sc_check(hexToLong(sc_reduce32_2(x))))
-    
-
-        
-
-
-        
-        
-
