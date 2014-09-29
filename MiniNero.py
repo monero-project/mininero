@@ -308,6 +308,7 @@ def cn_fast_hash(key, size):
 ###################################################
 
 def random_scalar():
+    #Gets a random scalar mod q and 32 bytes
     tmp = rand.getrandbits(64 * 8) # 8 bits to a byte ...  
     tmp = sc_reduce(tmp) #-> turns 64 to 32 (note sure why don't just gt 32 in first place ... )
     return tmp
@@ -348,6 +349,7 @@ def check_key(key):
     return isoncurve(toPoint(key))
 
 def secret_key_to_public_key(secret_key):
+    #turns a secret key to a public key
     #the actual function returns as bytes since they mult the fast way.
     if sc_check(secret_key) != 0:
         print "error in sc_check"
@@ -373,6 +375,12 @@ def generate_key_image(public_key, secret_key):
 
 def generate_ring_signature(prefix, image, pubs, pubs_count, sec, sec_index):
     #returns a ring signature
+    #prefix is whatever message
+    #image is key image I = xH(P)
+    #pubs is [pub1, pub2, pub3]
+    #pubs_count is number in pubs (ex 3)
+    #sec is your secret key x
+    #sec_index is which of the pubs is your pub
     if sec_index >= pubs_count:
         print "bad index of secret key!"
         quit()
@@ -421,7 +429,13 @@ def generate_ring_signature(prefix, image, pubs, pubs_count, sec, sec_index):
 
 def check_ring_signature(prefix, key_image, pubs, pubs_count, sigr, sigc):
     #from https://github.com/monero-project/bitmonero/blob/6a70de32bf872d97f9eebc7564f1ee41ff149c36/src/crypto/crypto.cpp
-    #this is the "ver" algorithm
+    #this is the "ver" algorithm from CN
+    #takes the prefix (message)
+    #key_image is I= xH(P)
+    #pubs is like [pub1, pub2, pub3]
+    #pubs_count is length of above list (3 in this case)
+    #sigr is  list of the r-values in the ring sig [r[0], r[1], ...]
+    #sigc is a list of the c-values in the ring sig [c[0], c[1], ...]
     aba = [0 for xx in range(pubs_count)] 
     abb = [0 for xx in range(pubs_count)] 
 
@@ -512,6 +526,9 @@ def derive_secret_key(derivation, output_index, base):
     return base + scalar
     
 class s_comm:
+    #this is a helper struct in the original CN code
+    #didn't actually end up using it here..
+    #though originally I was doing so.
     def __init__(self, **kwds):
         self.__dict__.update(kwds)
 
@@ -558,6 +575,38 @@ def sc_check(key):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) <= 1:
+        print"MiniNero, A Model of the CryptoNote WhitePaper"
+        print"----------------------------------------------"
+        print"output should differ slightly from CN cpp source"
+        print"mainly based on packing / hashing differences."
+        print"This code was written to help model and understand"
+        print"the ring signature code in the cryptonote source."
+        print""
+        print"Run MiniNero.py with one of the below options"
+        print"ex. python MiniNero.py ringsig"
+        print""
+        print"rs - demos MiniNero the random_scalar function"
+        print"keys - demos MiniNero key generation"
+        print"fasthash - demos MiniNero fast hash "
+        print"hashscalar - demos MiniNero H_s(P) equivalent function" 
+        print"hashcurve - demos MiniNero H_p(P)"
+        print"checkkey - demos MiniNero check_key function"
+        print"secpub - demos turning a fixed secret to a public key"
+        print"keyder - demos MiniNero Key Derivation"
+        print"dersca - demos MiniNero derivation to scalar"
+        print"derpub - demos derive public key"
+        print"dersec - demos derive secret key"
+        print"testcomm - tests the helper struct for some CN functions"
+        print"gensig - testing generate_signature"
+        print"checksig - tests checking signature"
+        print"keyimage - tests creating I=xH_p(P)"
+        print"ringsig - tests creating and checking a ringsig"
+        print"conv - tests some helper conversion functions"
+        print"red - tests some of the sc_Code"
+        print"gedb - tests some of the edwards curve functions"
+        print"sck - tests sc_check"
+        quit()
     if sys.argv[1] == "rs":
         #test random_scalar
         print(longToHex(random_scalar()))
