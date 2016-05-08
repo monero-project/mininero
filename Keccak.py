@@ -135,9 +135,7 @@ class Keccak:
     ### Conversion functions String <-> Table (and vice-versa)
 
     def convertStrToTable(self,string):
-        """Convert a string of bytes to its 5x5 matrix representation
 
-        string: string of bytes of hex-coded bytes (e.g. '9A2C...')"""
 
         #Check that input paramaters
         if self.w%8!= 0:
@@ -159,13 +157,12 @@ class Keccak:
         return output
 
     def convertTableToStr(self,table):
-        """convert 5x5 matrix to string"""
 
         #Check input format
         if self.w%8!= 0:
             raise KeccakError.KeccakError("w is not a multiple of 8")
         if (len(table)!=5) or (False in [len(row)==5 for row in table]):
-            raise KeccakError.KeccakError("table must be 5x5")
+            raise KeccakError.KeccakError("table must b")
 
         #Convert
         output=['']*25
@@ -178,8 +175,6 @@ class Keccak:
     def Round(self,A,RCfixed):
         """Perform one round of computation as defined in the Keccak-f permutation
 
-        A: current state (5x5 matrix)
-        RCfixed: value of round constant to use (integer)
         """
 
         #Initialisation of temporary variables
@@ -220,7 +215,6 @@ class Keccak:
     def KeccakF(self,A, verbose=False):
         """Perform Keccak-f function on the state A
 
-        A: 5x5 matrix containing the state
         verbose: a boolean flag activating the printing of intermediate computations
         """
 
@@ -287,7 +281,7 @@ class Keccak:
 
         return my_string
 
-    def Keccak(self,M,r=1024,c=576,n=1024,verbose=False):
+    def Keccak(self,M,r=1024,c=512,n=1024,verbose=False):
         """Compute the Keccak[r,c,d] sponge function on message M
 
         M: message pair (length in bits, string of hex characters ('9AFC...')

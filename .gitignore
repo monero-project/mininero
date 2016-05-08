@@ -1,4 +1,19 @@
+brief/.vscode/
+.vscode/
 *.pyc
-####-*.patch
-*.egg/
+*.py~
+*.swp
+*.secretawesomeresearch
+*.txt~
+*.exe
+*.orgi
+*.c~
+*.cpp~
+bighash.py
+GPATH
+GRTAGS
+GTAGS
+brief/GPATH
+brief/GRTAGS
+brief/GTAGS
 
