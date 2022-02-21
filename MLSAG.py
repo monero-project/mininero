@@ -9,7 +9,7 @@ def keyImage(x, rows):
     HP = keyVector(rows)
     KeyImage = keyVector(rows)
     for i in range(0, rows):
-      HP[i] = MiniNero.hashToPoint_cn(MiniNero.scalarmultBase(x[i]))
+      HP[i] = MiniNero.hashToPointCN(MiniNero.scalarmultBase(x[i]))
       KeyImage[i] = MiniNero.scalarmultKey(HP[i], x[i])
     return KeyImage
 
@@ -20,14 +20,14 @@ def MLSAG_Sign(pk, xx, index):
     L = [[None] * cols] #list of keyvectors? except it's indexed by cols... it's kind of internal actually
     R = [[None] * cols]
     s = [[PaperWallet.skGen() for i in range(0, cols)] ] #first index is rows, second is cols, wonder if I should switch that..
-    HP = [[MiniNero.hashToPoint_cn(i) for i in pk[0]]]
+    HP = [[MiniNero.hashToPointCN(i) for i in pk[0]]]
 
     pj = ''.join(pk[0])  
     for i in range(1, rows):
       L.append([None] * cols)
       R.append([None] * cols)
       s.append([PaperWallet.skGen() for j in range(0, cols)])
-      HP.append([MiniNero.hashToPoint_cn(j) for j in pk[i]]) 
+      HP.append([MiniNero.hashToPointCN(j) for j in pk[i]]) 
       pj = pj + ''.join(pk[i])
 
     c= [None] * cols #1-dimensional
@@ -64,9 +64,9 @@ def MLSAG_Ver(pk, keyimage, c1, s ):
       R.append([None] * cols)
       pj = pj + ''.join(pk[i])
     c= [None]*(cols+1) #you do an extra one, and then check the wrap around 
-    HP = [[MiniNero.hashToPoint_cn(i) for i in pk[0]]]
+    HP = [[MiniNero.hashToPointCN(i) for i in pk[0]]]
     for j in range(1, rows):
-      HP.append([MiniNero.hashToPoint_cn(i) for i in pk[j]])
+      HP.append([MiniNero.hashToPointCN(i) for i in pk[j]])
     c[0] = c1
     j = 0
     while j < cols:
