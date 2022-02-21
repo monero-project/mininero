@@ -2,7 +2,7 @@ import MiniNero
 import MLSAG
 import LLW_Sigs
 import PaperWallet
-import AggregateSchnorr
+import ASNL
 import Ecdh
 import Translator
 
