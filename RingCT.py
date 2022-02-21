@@ -2,7 +2,7 @@ import MiniNero
 import MLSAG
 import LLW_Sigs
 import PaperWallet
-import AggregateSchnorr
+import ASNL
 import Ecdh
 import Translator
 
@@ -72,7 +72,7 @@ def genRangeProof(b, digits):
         a = MiniNero.addScalars(a, ai[i]) #creating the total mask since you have to pass this to receiver...
         Ci[i] = MiniNero.addKeys(MiniNero.scalarmultBase(ai[i]), MiniNero.scalarmultKey(getHForCT(), MiniNero.intToHex(bb[i] * 2 ** i)))
         CiH[i] = MiniNero.subKeys(Ci[i], MiniNero.scalarmultKey(getHForCT(), MiniNero.intToHex(2 ** i)))
-    L1, s2, s = AggregateSchnorr.GenASNL(ai, Ci, CiH, bb)
+    L1, s2, s = ASNL.GenASNL(ai, Ci, CiH, bb)
     return sumCi(Ci), Ci, L1, s2, s, a
 
 def verRangeProof(Ci, L1, s2, s):
@@ -80,10 +80,10 @@ def verRangeProof(Ci, L1, s2, s):
     CiH = [None] * n
     for i in range(0, n):
         CiH[i] = MiniNero.subKeys(Ci[i], MiniNero.scalarmultKey(getHForCT(), MiniNero.intToHex(2 ** i)))
-    return AggregateSchnorr.VerASNL(Ci, CiH, L1, s2, s) 
+    return ASNL.VerASNL(Ci, CiH, L1, s2, s) 
 
 def ComputeReceivedAmount(senderEphemPk, receiverSK, maskedMask, maskedAmount, Ci, exponent):
-    ss1, ss2 = ecdh.ecdhretrieve(receiverSK, senderEphemPk)
+    ss1, ss2 = Ecdh.ecdhRetrieve(receiverSK, senderEphemPk)
     mask = MiniNero.sc_sub_keys(maskedMask, ss1)
     CSum = sumCi(Ci)
     bH = MiniNero.subKeys(CSum, MiniNero.scalarmultBase(mask)) #bH = C - aG
